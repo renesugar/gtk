@@ -6,8 +6,8 @@ use gdk;
 use glib::object::Cast;
 use glib::object::IsA;
 use glib::translate::*;
-use std::mem;
 use gtk_sys;
+use std::mem;
 use ColorButton;
 use Widget;
 
@@ -29,9 +29,9 @@ impl<O: IsA<ColorButton>> ColorButtonExtManual for O {
 
     fn get_color(&self) -> gdk::Color {
         unsafe {
-            let mut color = mem::uninitialized();
-            gtk_sys::gtk_color_button_get_color(self.as_ref().to_glib_none().0, &mut color);
-            color
+            let mut color = mem::MaybeUninit::uninit();
+            gtk_sys::gtk_color_button_get_color(self.as_ref().to_glib_none().0, color.as_mut_ptr());
+            color.assume_init()
         }
     }
 

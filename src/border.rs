@@ -3,9 +3,9 @@
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
 use glib::translate::*;
+use gtk_sys;
 use std::fmt;
 use std::ops;
-use gtk_sys;
 
 glib_wrapper! {
     #[derive(PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -14,6 +14,8 @@ glib_wrapper! {
     match fn {
         copy => |ptr| gtk_sys::gtk_border_copy(mut_override(ptr)),
         free => |ptr| gtk_sys::gtk_border_free(ptr),
+        init => |_ptr| (),
+        clear => |_ptr| (),
         get_type => || gtk_sys::gtk_border_get_type(),
     }
 }
@@ -35,9 +37,7 @@ impl ops::DerefMut for Border {
 impl Border {
     pub fn new() -> Border {
         assert_initialized_main_thread!();
-        unsafe {
-            from_glib_full(gtk_sys::gtk_border_new())
-        }
+        unsafe { from_glib_full(gtk_sys::gtk_border_new()) }
     }
 }
 

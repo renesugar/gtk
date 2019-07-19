@@ -1,9 +1,9 @@
 use glib;
 use glib::translate::*;
+use gtk_sys;
 use libc::c_char;
 use std::ffi::CStr;
 use std::mem;
-use gtk_sys;
 use TargetFlags;
 
 #[derive(Clone, Debug)]
@@ -41,7 +41,7 @@ impl TargetEntry {
 impl Uninitialized for TargetEntry {
     #[inline]
     unsafe fn uninitialized() -> Self {
-        mem::uninitialized()
+        mem::zeroed()
     }
 }
 

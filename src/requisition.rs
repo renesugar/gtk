@@ -1,6 +1,6 @@
 use glib::translate::*;
-use std::mem;
 use gtk_sys;
+use std::mem;
 
 #[repr(C)]
 pub struct Requisition {
@@ -12,7 +12,7 @@ pub struct Requisition {
 impl Uninitialized for Requisition {
     #[inline]
     unsafe fn uninitialized() -> Self {
-        mem::uninitialized()
+        mem::zeroed()
     }
 }
 
