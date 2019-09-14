@@ -81,8 +81,6 @@ pub trait BuilderExt: 'static {
 
     //fn connect_signals(&self, user_data: /*Unimplemented*/Option<Fundamental: Pointer>);
 
-    //fn connect_signals_full(&self, func: /*Unimplemented*/FnMut(&Builder, &glib::Object, &str, &str, Option<&glib::Object>, /*Ignored*/glib::ConnectFlags), user_data: /*Unimplemented*/Option<Fundamental: Pointer>);
-
     fn expose_object<P: IsA<glib::Object>>(&self, name: &str, object: &P);
 
     fn extend_with_template<P: IsA<Widget>>(
@@ -100,7 +98,7 @@ pub trait BuilderExt: 'static {
 
     fn get_type_from_name(&self, type_name: &str) -> glib::types::Type;
 
-    //fn lookup_callback_symbol(&self, callback_name: &str) -> Option<Box<dyn Fn() + 'static>>;
+    //fn lookup_callback_symbol(&self, callback_name: &str) -> Option<Box_<dyn Fn() + 'static>>;
 
     fn set_application<P: IsA<Application>>(&self, application: &P);
 
@@ -207,10 +205,6 @@ impl<O: IsA<Builder>> BuilderExt for O {
     //    unsafe { TODO: call gtk_sys:gtk_builder_connect_signals() }
     //}
 
-    //fn connect_signals_full(&self, func: /*Unimplemented*/FnMut(&Builder, &glib::Object, &str, &str, Option<&glib::Object>, /*Ignored*/glib::ConnectFlags), user_data: /*Unimplemented*/Option<Fundamental: Pointer>) {
-    //    unsafe { TODO: call gtk_sys:gtk_builder_connect_signals_full() }
-    //}
-
     fn expose_object<P: IsA<glib::Object>>(&self, name: &str, object: &P) {
         unsafe {
             gtk_sys::gtk_builder_expose_object(
@@ -279,7 +273,7 @@ impl<O: IsA<Builder>> BuilderExt for O {
         }
     }
 
-    //fn lookup_callback_symbol(&self, callback_name: &str) -> Option<Box<dyn Fn() + 'static>> {
+    //fn lookup_callback_symbol(&self, callback_name: &str) -> Option<Box_<dyn Fn() + 'static>> {
     //    unsafe { TODO: call gtk_sys:gtk_builder_lookup_callback_symbol() }
     //}
 

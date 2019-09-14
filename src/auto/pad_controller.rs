@@ -5,6 +5,7 @@
 use gdk;
 use gio;
 use glib::object::Cast;
+#[cfg(any(feature = "v3_22", feature = "dox"))]
 use glib::object::IsA;
 use glib::object::ObjectType as ObjectType_;
 use glib::translate::*;
@@ -76,7 +77,9 @@ impl PadController {
                 b"action-group\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get()
+            value
+                .get()
+                .expect("Return Value for property `action-group` getter")
         }
     }
 
@@ -88,7 +91,7 @@ impl PadController {
                 b"pad\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get()
+            value.get().expect("Return Value for property `pad` getter")
         }
     }
 }

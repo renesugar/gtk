@@ -11,6 +11,7 @@ use glib::object::ObjectExt;
 use glib::signal::connect_raw;
 use glib::signal::SignalHandlerId;
 use glib::translate::*;
+use glib::value::SetValueOptional;
 use glib::GString;
 use glib::StaticType;
 use glib::ToValue;
@@ -592,7 +593,7 @@ pub trait GtkMenuExt: 'static {
         bottom_attach: u32,
     );
 
-    //fn attach_to_widget<P: IsA<Widget>>(&self, attach_widget: &P, detacher: Option<Box<dyn FnOnce(&Widget, &Menu) + 'static>>);
+    //fn attach_to_widget<P: IsA<Widget>>(&self, attach_widget: &P, detacher: Option<Box_<dyn FnOnce(&Widget, &Menu) + 'static>>);
 
     fn detach(&self);
 
@@ -614,7 +615,7 @@ pub trait GtkMenuExt: 'static {
     fn popdown(&self);
 
     //#[cfg_attr(feature = "v3_22", deprecated)]
-    //fn popup<P: IsA<Widget>, Q: IsA<Widget>>(&self, parent_menu_shell: Option<&P>, parent_menu_item: Option<&Q>, func: Option<Box<dyn FnOnce(&Menu, i32, i32, bool) + 'static>>, button: u32, activate_time: u32);
+    //fn popup<P: IsA<Widget>, Q: IsA<Widget>>(&self, parent_menu_shell: Option<&P>, parent_menu_item: Option<&Q>, func: Option<Box_<dyn FnOnce(&Menu, i32, i32, bool) + 'static>>, button: u32, activate_time: u32);
 
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     fn popup_at_pointer(&self, trigger_event: Option<&gdk::Event>);
@@ -639,7 +640,7 @@ pub trait GtkMenuExt: 'static {
     );
 
     //#[cfg_attr(feature = "v3_22", deprecated)]
-    //fn popup_for_device<P: IsA<Widget>, Q: IsA<Widget>>(&self, device: Option<&gdk::Device>, parent_menu_shell: Option<&P>, parent_menu_item: Option<&Q>, func: Option<Box<dyn Fn(&Menu, i32, i32, bool) + 'static>>, button: u32, activate_time: u32);
+    //fn popup_for_device<P: IsA<Widget>, Q: IsA<Widget>>(&self, device: Option<&gdk::Device>, parent_menu_shell: Option<&P>, parent_menu_item: Option<&Q>, func: Option<Box_<dyn Fn(&Menu, i32, i32, bool) + 'static>>, button: u32, activate_time: u32);
 
     fn reorder_child<P: IsA<Widget>>(&self, child: &P, position: i32);
 
@@ -663,7 +664,10 @@ pub trait GtkMenuExt: 'static {
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     fn set_property_anchor_hints(&self, anchor_hints: gdk::AnchorHints);
 
-    fn set_property_attach_widget(&self, attach_widget: Option<&Widget>);
+    fn set_property_attach_widget<P: IsA<Widget> + SetValueOptional>(
+        &self,
+        attach_widget: Option<&P>,
+    );
 
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     fn get_property_menu_type_hint(&self) -> gdk::WindowTypeHint;
@@ -768,7 +772,7 @@ impl<O: IsA<Menu>> GtkMenuExt for O {
         }
     }
 
-    //fn attach_to_widget<P: IsA<Widget>>(&self, attach_widget: &P, detacher: Option<Box<dyn FnOnce(&Widget, &Menu) + 'static>>) {
+    //fn attach_to_widget<P: IsA<Widget>>(&self, attach_widget: &P, detacher: Option<Box_<dyn FnOnce(&Widget, &Menu) + 'static>>) {
     //    unsafe { TODO: call gtk_sys:gtk_menu_attach_to_widget() }
     //}
 
@@ -834,7 +838,7 @@ impl<O: IsA<Menu>> GtkMenuExt for O {
         }
     }
 
-    //fn popup<P: IsA<Widget>, Q: IsA<Widget>>(&self, parent_menu_shell: Option<&P>, parent_menu_item: Option<&Q>, func: Option<Box<dyn FnOnce(&Menu, i32, i32, bool) + 'static>>, button: u32, activate_time: u32) {
+    //fn popup<P: IsA<Widget>, Q: IsA<Widget>>(&self, parent_menu_shell: Option<&P>, parent_menu_item: Option<&Q>, func: Option<Box_<dyn FnOnce(&Menu, i32, i32, bool) + 'static>>, button: u32, activate_time: u32) {
     //    unsafe { TODO: call gtk_sys:gtk_menu_popup() }
     //}
 
@@ -888,7 +892,7 @@ impl<O: IsA<Menu>> GtkMenuExt for O {
         }
     }
 
-    //fn popup_for_device<P: IsA<Widget>, Q: IsA<Widget>>(&self, device: Option<&gdk::Device>, parent_menu_shell: Option<&P>, parent_menu_item: Option<&Q>, func: Option<Box<dyn Fn(&Menu, i32, i32, bool) + 'static>>, button: u32, activate_time: u32) {
+    //fn popup_for_device<P: IsA<Widget>, Q: IsA<Widget>>(&self, device: Option<&gdk::Device>, parent_menu_shell: Option<&P>, parent_menu_item: Option<&Q>, func: Option<Box_<dyn Fn(&Menu, i32, i32, bool) + 'static>>, button: u32, activate_time: u32) {
     //    unsafe { TODO: call gtk_sys:gtk_menu_popup_for_device() }
     //}
 
@@ -962,7 +966,10 @@ impl<O: IsA<Menu>> GtkMenuExt for O {
                 b"anchor-hints\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `anchor-hints` getter")
+                .unwrap()
         }
     }
 
@@ -977,7 +984,10 @@ impl<O: IsA<Menu>> GtkMenuExt for O {
         }
     }
 
-    fn set_property_attach_widget(&self, attach_widget: Option<&Widget>) {
+    fn set_property_attach_widget<P: IsA<Widget> + SetValueOptional>(
+        &self,
+        attach_widget: Option<&P>,
+    ) {
         unsafe {
             gobject_sys::g_object_set_property(
                 self.to_glib_none().0 as *mut gobject_sys::GObject,
@@ -996,7 +1006,10 @@ impl<O: IsA<Menu>> GtkMenuExt for O {
                 b"menu-type-hint\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `menu-type-hint` getter")
+                .unwrap()
         }
     }
 
@@ -1020,7 +1033,10 @@ impl<O: IsA<Menu>> GtkMenuExt for O {
                 b"rect-anchor-dx\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `rect-anchor-dx` getter")
+                .unwrap()
         }
     }
 
@@ -1044,7 +1060,10 @@ impl<O: IsA<Menu>> GtkMenuExt for O {
                 b"rect-anchor-dy\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `rect-anchor-dy` getter")
+                .unwrap()
         }
     }
 
@@ -1068,7 +1087,10 @@ impl<O: IsA<Menu>> GtkMenuExt for O {
                 b"bottom-attach\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `bottom-attach` getter")
+                .unwrap()
         }
     }
 
@@ -1092,7 +1114,10 @@ impl<O: IsA<Menu>> GtkMenuExt for O {
                 b"left-attach\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `left-attach` getter")
+                .unwrap()
         }
     }
 
@@ -1116,7 +1141,10 @@ impl<O: IsA<Menu>> GtkMenuExt for O {
                 b"right-attach\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `right-attach` getter")
+                .unwrap()
         }
     }
 
@@ -1140,7 +1168,10 @@ impl<O: IsA<Menu>> GtkMenuExt for O {
                 b"top-attach\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `top-attach` getter")
+                .unwrap()
         }
     }
 

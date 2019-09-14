@@ -11,6 +11,7 @@ use glib::object::IsA;
 use glib::signal::connect_raw;
 use glib::signal::SignalHandlerId;
 use glib::translate::*;
+use glib::value::SetValueOptional;
 use glib::GString;
 use glib::StaticType;
 use glib::ToValue;
@@ -593,7 +594,7 @@ pub trait ImageExt: 'static {
 
     fn set_property_file(&self, file: Option<&str>);
 
-    fn set_property_gicon(&self, gicon: Option<&gio::Icon>);
+    fn set_property_gicon<P: IsA<gio::Icon> + SetValueOptional>(&self, gicon: Option<&P>);
 
     fn get_property_icon_name(&self) -> Option<GString>;
 
@@ -607,7 +608,10 @@ pub trait ImageExt: 'static {
 
     fn get_property_pixbuf_animation(&self) -> Option<gdk_pixbuf::PixbufAnimation>;
 
-    fn set_property_pixbuf_animation(&self, pixbuf_animation: Option<&gdk_pixbuf::PixbufAnimation>);
+    fn set_property_pixbuf_animation<P: IsA<gdk_pixbuf::PixbufAnimation> + SetValueOptional>(
+        &self,
+        pixbuf_animation: Option<&P>,
+    );
 
     fn get_property_resource(&self) -> Option<GString>;
 
@@ -771,7 +775,9 @@ impl<O: IsA<Image>> ImageExt for O {
                 b"file\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get()
+            value
+                .get()
+                .expect("Return Value for property `file` getter")
         }
     }
 
@@ -785,7 +791,7 @@ impl<O: IsA<Image>> ImageExt for O {
         }
     }
 
-    fn set_property_gicon(&self, gicon: Option<&gio::Icon>) {
+    fn set_property_gicon<P: IsA<gio::Icon> + SetValueOptional>(&self, gicon: Option<&P>) {
         unsafe {
             gobject_sys::g_object_set_property(
                 self.to_glib_none().0 as *mut gobject_sys::GObject,
@@ -803,7 +809,9 @@ impl<O: IsA<Image>> ImageExt for O {
                 b"icon-name\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get()
+            value
+                .get()
+                .expect("Return Value for property `icon-name` getter")
         }
     }
 
@@ -825,7 +833,10 @@ impl<O: IsA<Image>> ImageExt for O {
                 b"icon-size\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `icon-size` getter")
+                .unwrap()
         }
     }
 
@@ -858,13 +869,15 @@ impl<O: IsA<Image>> ImageExt for O {
                 b"pixbuf-animation\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get()
+            value
+                .get()
+                .expect("Return Value for property `pixbuf-animation` getter")
         }
     }
 
-    fn set_property_pixbuf_animation(
+    fn set_property_pixbuf_animation<P: IsA<gdk_pixbuf::PixbufAnimation> + SetValueOptional>(
         &self,
-        pixbuf_animation: Option<&gdk_pixbuf::PixbufAnimation>,
+        pixbuf_animation: Option<&P>,
     ) {
         unsafe {
             gobject_sys::g_object_set_property(
@@ -883,7 +896,9 @@ impl<O: IsA<Image>> ImageExt for O {
                 b"resource\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get()
+            value
+                .get()
+                .expect("Return Value for property `resource` getter")
         }
     }
 
@@ -905,7 +920,10 @@ impl<O: IsA<Image>> ImageExt for O {
                 b"use-fallback\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `use-fallback` getter")
+                .unwrap()
         }
     }
 

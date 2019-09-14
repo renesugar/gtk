@@ -930,7 +930,12 @@ pub trait GtkWindowExt: 'static {
 
     fn set_focus_visible(&self, setting: bool);
 
-    //fn set_geometry_hints<P: IsA<Widget>>(&self, geometry_widget: Option<&P>, geometry: /*Ignored*/Option<&mut gdk::Geometry>, geom_mask: gdk::WindowHints);
+    fn set_geometry_hints<P: IsA<Widget>>(
+        &self,
+        geometry_widget: Option<&P>,
+        geometry: Option<&gdk::Geometry>,
+        geom_mask: gdk::WindowHints,
+    );
 
     fn set_gravity(&self, gravity: gdk::Gravity);
 
@@ -1709,9 +1714,21 @@ impl<O: IsA<Window>> GtkWindowExt for O {
         }
     }
 
-    //fn set_geometry_hints<P: IsA<Widget>>(&self, geometry_widget: Option<&P>, geometry: /*Ignored*/Option<&mut gdk::Geometry>, geom_mask: gdk::WindowHints) {
-    //    unsafe { TODO: call gtk_sys:gtk_window_set_geometry_hints() }
-    //}
+    fn set_geometry_hints<P: IsA<Widget>>(
+        &self,
+        geometry_widget: Option<&P>,
+        geometry: Option<&gdk::Geometry>,
+        geom_mask: gdk::WindowHints,
+    ) {
+        unsafe {
+            gtk_sys::gtk_window_set_geometry_hints(
+                self.as_ref().to_glib_none().0,
+                geometry_widget.map(|p| p.as_ref()).to_glib_none().0,
+                mut_override(geometry.to_glib_none().0),
+                geom_mask.to_glib(),
+            );
+        }
+    }
 
     fn set_gravity(&self, gravity: gdk::Gravity) {
         unsafe {
@@ -1942,7 +1959,10 @@ impl<O: IsA<Window>> GtkWindowExt for O {
                 b"default-height\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `default-height` getter")
+                .unwrap()
         }
     }
 
@@ -1964,7 +1984,10 @@ impl<O: IsA<Window>> GtkWindowExt for O {
                 b"default-width\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `default-width` getter")
+                .unwrap()
         }
     }
 
@@ -1986,7 +2009,10 @@ impl<O: IsA<Window>> GtkWindowExt for O {
                 b"has-toplevel-focus\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `has-toplevel-focus` getter")
+                .unwrap()
         }
     }
 
@@ -1998,7 +2024,10 @@ impl<O: IsA<Window>> GtkWindowExt for O {
                 b"is-active\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `is-active` getter")
+                .unwrap()
         }
     }
 
@@ -2010,7 +2039,10 @@ impl<O: IsA<Window>> GtkWindowExt for O {
                 b"is-maximized\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `is-maximized` getter")
+                .unwrap()
         }
     }
 
@@ -2022,7 +2054,10 @@ impl<O: IsA<Window>> GtkWindowExt for O {
                 b"type\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `type` getter")
+                .unwrap()
         }
     }
 
@@ -2034,7 +2069,10 @@ impl<O: IsA<Window>> GtkWindowExt for O {
                 b"window-position\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `window-position` getter")
+                .unwrap()
         }
     }
 
@@ -2142,7 +2180,10 @@ impl<O: IsA<Window>> GtkWindowExt for O {
                 .emit("enable-debugging", &[&toggle])
                 .unwrap()
         };
-        res.unwrap().get().unwrap()
+        res.unwrap()
+            .get()
+            .expect("Return Value for `emit_enable_debugging`")
+            .unwrap()
     }
 
     fn connect_keys_changed<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {

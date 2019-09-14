@@ -8,6 +8,7 @@ use glib::object::IsA;
 use glib::signal::connect_raw;
 use glib::signal::SignalHandlerId;
 use glib::translate::*;
+use glib::value::SetValueOptional;
 use glib::StaticType;
 use glib::ToValue;
 use glib::Value;
@@ -706,7 +707,7 @@ pub trait CellRendererComboExt: 'static {
 
     fn get_property_model(&self) -> Option<TreeModel>;
 
-    fn set_property_model(&self, model: Option<&TreeModel>);
+    fn set_property_model<P: IsA<TreeModel> + SetValueOptional>(&self, model: Option<&P>);
 
     fn get_property_text_column(&self) -> i32;
 
@@ -731,7 +732,10 @@ impl<O: IsA<CellRendererCombo>> CellRendererComboExt for O {
                 b"has-entry\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `has-entry` getter")
+                .unwrap()
         }
     }
 
@@ -753,11 +757,13 @@ impl<O: IsA<CellRendererCombo>> CellRendererComboExt for O {
                 b"model\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get()
+            value
+                .get()
+                .expect("Return Value for property `model` getter")
         }
     }
 
-    fn set_property_model(&self, model: Option<&TreeModel>) {
+    fn set_property_model<P: IsA<TreeModel> + SetValueOptional>(&self, model: Option<&P>) {
         unsafe {
             gobject_sys::g_object_set_property(
                 self.to_glib_none().0 as *mut gobject_sys::GObject,
@@ -775,7 +781,10 @@ impl<O: IsA<CellRendererCombo>> CellRendererComboExt for O {
                 b"text-column\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `text-column` getter")
+                .unwrap()
         }
     }
 

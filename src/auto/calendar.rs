@@ -678,7 +678,7 @@ impl<O: IsA<Calendar>> CalendarExt for O {
         &self,
         func: P,
     ) {
-        let func_data: Box_<P> = Box::new(func);
+        let func_data: Box_<P> = Box_::new(func);
         unsafe extern "C" fn func_func<
             P: Fn(&Calendar, u32, u32, u32) -> Option<String> + 'static,
         >(
@@ -707,7 +707,7 @@ impl<O: IsA<Calendar>> CalendarExt for O {
             gtk_sys::gtk_calendar_set_detail_func(
                 self.as_ref().to_glib_none().0,
                 func,
-                Box::into_raw(super_callback0) as *mut _,
+                Box_::into_raw(super_callback0) as *mut _,
                 destroy_call3,
             );
         }
@@ -748,7 +748,10 @@ impl<O: IsA<Calendar>> CalendarExt for O {
                 b"day\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `day` getter")
+                .unwrap()
         }
     }
 
@@ -770,7 +773,10 @@ impl<O: IsA<Calendar>> CalendarExt for O {
                 b"month\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `month` getter")
+                .unwrap()
         }
     }
 
@@ -792,7 +798,10 @@ impl<O: IsA<Calendar>> CalendarExt for O {
                 b"no-month-change\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `no-month-change` getter")
+                .unwrap()
         }
     }
 
@@ -814,7 +823,10 @@ impl<O: IsA<Calendar>> CalendarExt for O {
                 b"show-day-names\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `show-day-names` getter")
+                .unwrap()
         }
     }
 
@@ -836,7 +848,10 @@ impl<O: IsA<Calendar>> CalendarExt for O {
                 b"show-details\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `show-details` getter")
+                .unwrap()
         }
     }
 
@@ -858,7 +873,10 @@ impl<O: IsA<Calendar>> CalendarExt for O {
                 b"show-heading\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `show-heading` getter")
+                .unwrap()
         }
     }
 
@@ -880,7 +898,10 @@ impl<O: IsA<Calendar>> CalendarExt for O {
                 b"show-week-numbers\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `show-week-numbers` getter")
+                .unwrap()
         }
     }
 
@@ -902,7 +923,10 @@ impl<O: IsA<Calendar>> CalendarExt for O {
                 b"year\0".as_ptr() as *const _,
                 value.to_glib_none_mut().0,
             );
-            value.get().unwrap()
+            value
+                .get()
+                .expect("Return Value for property `year` getter")
+                .unwrap()
         }
     }
 
